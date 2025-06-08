@@ -114,7 +114,7 @@
   }
 
   .animate-gradient-x {
-    animation: gradient-x 15s linear infinite;
+    animation: gradient-x 15s linear infinite;  
     background-size: 200% 200%;
     will-change: background-position;
     contain: layout;

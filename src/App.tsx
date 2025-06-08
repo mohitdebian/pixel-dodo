@@ -10,7 +10,6 @@ import { AuthModal } from "./components/AuthModal";
 import { LogIn, Sparkles } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Toaster } from 'sonner';
 import AppRoutes from './routes';
 
 const queryClient = new QueryClient({
@@ -46,6 +45,17 @@ const App = () => {
         <BrowserRouter>
           <Analytics />
           <div className="relative min-h-screen">
+            {/* Glossy Background */}
+            <div className="fixed inset-0 bg-gradient-to-br from-violet-900/20 via-background to-background"></div>
+            <div className="fixed inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
+            
+            {/* Animated background elements */}
+            <div className="fixed inset-0 pointer-events-none">
+              <div className="absolute -top-32 -right-32 w-64 h-64 bg-violet-500/20 rounded-full blur-3xl animate-blob"></div>
+              <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+            </div>
+            
             <div className="absolute top-4 left-4 z-50">
               <a href="/" className="flex items-center gap-2 text-white hover:opacity-80 transition-opacity">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
@@ -87,7 +97,6 @@ const App = () => {
         />
       </TooltipProvider>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 };
