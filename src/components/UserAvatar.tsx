@@ -186,17 +186,28 @@ export const UserAvatar = () => {
                   
                   <a 
                     href="mailto:devbyte.mohit@gmail.com" 
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const isMobile = window.innerWidth < 768;
+                      if (isMobile) {
+                        window.location.href = 'mailto:devbyte.mohit@gmail.com';
+                      } else {
+                        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=devbyte.mohit@gmail.com&su=Project%20Inquiry&body=Hello%2C%0A%0AI%20am%20interested%20in%20your%20AI%20Image%20Generation%20Platform.%0A%0ABest%20regards%2C', '_blank');
+                      }
+                    }}
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group relative overflow-hidden"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 animate-pulse"></div>
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-lg shadow-violet-500/20">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <div>
-                      <div className="font-medium">Contact Us</div>
-                      <div className="text-gray-400 text-xs">devbyte.mohit@gmail.com</div>
+                      <div className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Project for Sale</div>
+                      <div className="text-gray-400 text-xs">Complete AI Image Generation Platform</div>
                     </div>
                   </a>
                 </div>
@@ -256,7 +267,7 @@ export const UserAvatar = () => {
                       <div className="text-gray-400 text-xs">Purchase credits for image generation</div>
                     </div>
                   </DropdownMenu.Item>
-                  
+
                   <a 
                     href="https://twitter.com/mohitdebian" 
                     target="_blank" 
@@ -276,17 +287,28 @@ export const UserAvatar = () => {
                   
                   <a 
                     href="mailto:devbyte.mohit@gmail.com" 
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const isMobile = window.innerWidth < 768;
+                      if (isMobile) {
+                        window.location.href = 'mailto:devbyte.mohit@gmail.com';
+                      } else {
+                        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=devbyte.mohit@gmail.com&su=Project%20Inquiry&body=Hello%2C%0A%0AI%20am%20interested%20in%20your%20AI%20Image%20Generation%20Platform.%0A%0ABest%20regards%2C', '_blank');
+                      }
+                    }}
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group relative overflow-hidden"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 animate-pulse"></div>
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-lg shadow-violet-500/20">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <div>
-                      <div className="font-medium">Contact Us</div>
-                      <div className="text-gray-400 text-xs">devbyte.mohit@gmail.com</div>
+                      <div className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Project for Sale</div>
+                      <div className="text-gray-400 text-xs">Complete AI Image Generation Platform</div>
                     </div>
                   </a>
                   
