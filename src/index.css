@@ -154,9 +154,12 @@
 
   .animate-flow {
     animation: flow 30s linear infinite;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
-  .pause-animation {
+  .hover\:pause-animation:hover {
     animation-play-state: paused;
   }
 }

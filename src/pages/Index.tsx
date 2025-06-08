@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import PromptInput from '@/components/PromptInput';
 import GenerateButton from '@/components/GenerateButton';
-import ImageGrid from '@/components/ImageGrid';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ApiKeyInput from '@/components/ApiKeyInput';
-import ImageSlideshow from '@/components/ImageSlideshow';
-import Testimonials from '@/components/Testimonials';
-import ImageCollagePlaceholder from '@/components/ImageCollagePlaceholder';
 import { toast } from "sonner";
 import { generateImage, GeneratedImage, initializeTogether } from '@/services/imageService';
 import { Sparkles, Wand2, Image as ImageIcon, Stars, ZapIcon, Zap, Mail, AlertCircle, ArrowUpRight, Bot } from 'lucide-react';
@@ -15,6 +11,12 @@ import { hasEnoughCredits, isEmailVerified as checkEmailVerified, sendVerificati
 import { CreditPurchaseModal } from '@/components/CreditPurchaseModal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+
+// Lazy load components
+const ImageGrid = lazy(() => import('@/components/ImageGrid'));
+const ImageSlideshow = lazy(() => import('@/components/ImageSlideshow'));
+const Testimonials = lazy(() => import('@/components/Testimonials'));
+const ImageCollagePlaceholder = lazy(() => import('@/components/ImageCollagePlaceholder'));
 
 // AI Models data
 const AI_MODELS = [
@@ -161,9 +163,9 @@ const Index: React.FC = () => {
     }
   }, []);
 
-  const handlePromptChange = (newPrompt: string) => {
-    setPrompt(newPrompt);
-  };
+  const handlePromptChange = useCallback((value: string) => {
+    setPrompt(value);
+  }, []);
 
   const handleApiKeyChange = (newApiKey: string) => {
     setApiKey(newApiKey);
@@ -185,7 +187,7 @@ const Index: React.FC = () => {
     }
   };
 
-  const handleGenerate = React.useCallback(async () => {
+  const handleGenerate = useCallback(async () => {
     if (isGenerating) return;
     
     if (!prompt.trim()) {
@@ -329,6 +331,48 @@ const Index: React.FC = () => {
     }
   };
 
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleGenerate();
+    }
+  }, [handleGenerate]);
+
+  const handlePurchaseCredits = useCallback(() => {
+    setIsPurchaseModalOpen(true);
+  }, []);
+
+  const handleCloseCreditModal = useCallback(() => {
+    setIsPurchaseModalOpen(false);
+  }, []);
+
+  const handleApiKeySubmit = useCallback(async (apiKey: string) => {
+    try {
+      initializeTogether(apiKey);
+      setIsApiKeySet(true);
+      toast.success("API key set successfully!");
+    } catch (error) {
+      console.error("Error setting API key:", error);
+      toast.error("Failed to set API key. Please try again.");
+    }
+  }, []);
+
+  const handleCloseApiKeyModal = useCallback(() => {
+    setIsApiKeySet(false);
+  }, []);
+
+  const memoizedImageGrid = useMemo(() => (
+    <Suspense fallback={<LoadingSpinner />}>
+      <ImageGrid images={images} />
+    </Suspense>
+  ), [images]);
+
+  const memoizedTestimonials = useMemo(() => (
+    <Suspense fallback={<LoadingSpinner />}>
+      <Testimonials />
+    </Suspense>
+  ), []);
+
   return (
     <>
       <Dialog open={showTutorial} onOpenChange={setShowTutorial}>
@@ -450,7 +494,7 @@ const Index: React.FC = () => {
             <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-violet-400 to-indigo-400 text-transparent bg-clip-text font-display">
               Your Creations
             </h2>
-            <ImageGrid images={images} isLoading={isGenerating} />
+            {memoizedImageGrid}
           </div>
         ) : (
           <div className="w-full max-w-7xl mx-auto px-4 mb-12">
@@ -501,7 +545,7 @@ const Index: React.FC = () => {
             </section> */}
 
             {/* User Testimonials */}
-            <section className="hidden md:block mb-16 overflow-hidden">
+            <section className="mb-16 overflow-hidden">
               <div className="flex justify-center mb-8">
                 <div className="relative inline-block">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 blur-xl rounded-full"></div>
@@ -513,7 +557,43 @@ const Index: React.FC = () => {
                 </div>
               </div>
               <div className="relative">
-                <div className="flex gap-6 animate-flow hover:pause-animation">
+                {/* Mobile view - vertical scroll */}
+                <div className="md:hidden flex flex-col gap-4 px-4">
+                  {[
+                    {
+                      name: "Sarah Chen",
+                      role: "Video Editor",
+                      content: "Other AI image tools are extremely expensive. I can get 90% of what I need with PixelMagic at a far lower price.",
+                      avatar: "👩‍🎨"
+                    },
+                    {
+                      name: "Michael Rodriguez",
+                      role: "Solo Developer",
+                      content: "For our landing page, we created hero photos using PixelMagic. We didn't have to hire a designer for our startup because it looked fantastic.",
+                      avatar: "👨‍💼"
+                    },
+                    {
+                      name: "Emma Thompson",
+                      role: "Freelancer",
+                      content: "As a freelance video creator, PixelMagic saves me time by quickly generating images I need. Plus, it's super affordable!",
+                      avatar: "👩‍💻"
+                    }
+                  ].map((testimonial, index) => (
+                    <div key={index} className="glass-card p-6 rounded-xl hover:scale-105 transition-all duration-300 animate-fade-in-up">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="text-4xl">{testimonial.avatar}</div>
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-100">{testimonial.name}</h3>
+                          <p className="text-sm text-gray-400">{testimonial.role}</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-300 font-body">{testimonial.content}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop view - horizontal scroll */}
+                <div className="hidden md:flex gap-6 animate-flow hover:pause-animation">
                   {[
                     {
                       name: "Sarah Chen",
@@ -651,7 +731,7 @@ const Index: React.FC = () => {
                         </li>
                       </ul>
                       <Button
-                        onClick={() => setIsPurchaseModalOpen(true)}
+                        onClick={handlePurchaseCredits}
                         className="w-full py-3 bg-gradient-to-r from-violet-500 to-indigo-500 hover:from-violet-600 hover:to-indigo-600 text-white font-medium rounded-lg transition-all duration-300 hover:scale-105"
                       >
                         Purchase Credits
@@ -722,7 +802,7 @@ const Index: React.FC = () => {
         {auth.currentUser && (
           <CreditPurchaseModal 
             isOpen={isPurchaseModalOpen}
-            onClose={() => setIsPurchaseModalOpen(false)}
+            onClose={handleCloseCreditModal}
             userId={auth.currentUser.uid}
           />
         )}
@@ -731,4 +811,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default React.memo(Index);

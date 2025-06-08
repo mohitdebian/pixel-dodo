@@ -11,6 +11,12 @@ const CREDIT_UPDATE_EVENT = 'creditUpdate';
 // Initialize Together client with environment variable if available
 let together: Together | null = null;
 
+// Cache for generated images
+const imageCache = new Map<string, GeneratedImage>();
+
+// Cache expiration time (1 hour)
+const CACHE_EXPIRATION = 60 * 60 * 1000;
+
 export function initializeTogether(apiKey: string) {
   // Try to use the provided API key or fall back to environment variable (if set)
   const key = apiKey || import.meta.env.VITE_TOGETHER_API_KEY;
@@ -25,10 +31,18 @@ export interface GeneratedImage {
   id: string;
   url: string;
   prompt: string;
+  timestamp?: number;
 }
 
 export async function generateImage(prompt: string): Promise<GeneratedImage> {
   try {
+    // Check cache first
+    const cacheKey = prompt.toLowerCase().trim();
+    const cachedImage = imageCache.get(cacheKey);
+    if (cachedImage && cachedImage.timestamp && Date.now() - cachedImage.timestamp < CACHE_EXPIRATION) {
+      return cachedImage;
+    }
+
     if (!together) {
       throw new Error("API client is not initialized. Please provide an API key first.");
     }
@@ -69,11 +83,15 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
     window.dispatchEvent(new Event(CREDIT_UPDATE_EVENT));
     
     const imageId = Date.now().toString();
-    const generatedImage = {
+    const generatedImage: GeneratedImage = {
       id: imageId,
       url: imageUrl,
-      prompt: prompt
+      prompt: prompt,
+      timestamp: Date.now()
     };
+    
+    // Cache the generated image
+    imageCache.set(cacheKey, generatedImage);
     
     // Save to Firestore as the last generated image with timestamp
     try {
