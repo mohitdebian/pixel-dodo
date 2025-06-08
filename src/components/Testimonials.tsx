@@ -1,44 +1,55 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ArrowUpRight, Twitter } from 'lucide-react';
 
 const Testimonials: React.FC = () => {
-  const testimonialsData = [
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    let animationFrame: number;
+    let lastScrollPosition = 0;
+    const scrollSpeed = 0.5;
+
+    const animate = () => {
+      if (!container) return;
+      
+      lastScrollPosition += scrollSpeed;
+      if (lastScrollPosition >= container.scrollWidth / 2) {
+        lastScrollPosition = 0;
+      }
+      
+      container.scrollLeft = lastScrollPosition;
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
+  const testimonials = [
     {
-      quote: '"Other AI image tools are extremely expensive. I can get 90% of what I need with PixelMagic at a far lower price."',
-      name: 'Sarah Chen',
-      handle: 'Video Editor',
-      avatar: 'user.png', // Assuming avatar images are in public/avatars
+      name: "Sarah Chen",
+      role: "Video Editor",
+      content: "Other AI image tools are extremely expensive. I can get 90% of what I need with PixelMagic at a far lower price.",
+      avatar: "👩‍🎨"
     },
     {
-      quote: '"For our landing page, we created hero photos using PixelMagic. We did not have to hire a designer for our startup because it looked fantastic."',
-      name: 'Michael Rodriguez',
-      handle: 'Solo Developer',
-      avatar: 'user.png', // Assuming avatar images are in public/avatars
+      name: "Michael Rodriguez",
+      role: "Solo Developer",
+      content: "For our landing page, we created hero photos using PixelMagic. We didn't have to hire a designer for our startup because it looked fantastic.",
+      avatar: "👨‍💼"
     },
     {
-      quote: '"As a freelance video creator, PixelMagic saves me time by quickly generating images I need. Plus, it’s super affordable!"',
-      name: 'Emma Thompson',
-      handle: 'Freelancer',
-      avatar: 'user.png', // Assuming avatar images are in public/avatars
-    },
-    // {
-    //   quote: '"Been on Leonardo since the alpha and it\'s been amazing watching the product grow. Highly recommend for any type of artist, from beginner to advanced."',
-    //   name: 'AlphaArtist',
-    //   handle: '@alphaartist',
-    //   avatar: '/avatars/alpha-artist.png',
-    // },
-    // {
-    //   quote: '"The speed and quality are unmatched. My workflow has improved drastically since I started using this platform."',
-    //   name: 'CreativeFlow',
-    //   handle: '@creativeflow',
-    //   avatar: '/avatars/creative-flow.png',
-    // },
-    // {
-    //   quote: '"A true game-changer for digital artists. The community features are incredibly inspiring!"',
-    //   name: 'DigitalDreamer',
-    //   handle: '@digitaldreamer',
-    //   avatar: '/avatars/digital-dreamer.png',
-    // },
+      name: "Emma Thompson",
+      role: "Freelancer",
+      content: "As a freelance video creator, PixelMagic saves me time by quickly generating images I need. Plus, it's super affordable!",
+      avatar: "👩‍💻"
+    }
   ];
 
   return (
@@ -51,30 +62,27 @@ const Testimonials: React.FC = () => {
         <div className="relative">
           {/* Testimonial Cards Container */}
           <div 
-            className="flex flex-col space-y-6 pb-4 md:flex-row md:space-x-6 md:space-y-0 md:overflow-x-auto md:whitespace-nowrap md:scrollbar-hide md:justify-start"
+            ref={containerRef}
+            className="flex gap-6 animate-flow hover:pause-animation"
+            style={{ willChange: 'transform' }}
           >
-            {/* No need to duplicate testimonials if not continuous marquee effect */}
-            {testimonialsData.map((testimonial, index) => (
-              <div 
-                key={index} 
-                className="flex-none w-80 p-6 rounded-xl border border-gray-800 bg-gray-900/50 backdrop-blur-sm animate-fade-in-up flex flex-col justify-between shadow-lg overflow-hidden flex-shrink-0"
-                style={{ animationDelay: `${index * 50}ms` }} // Stagger initial fade-in
+            {[...testimonials, ...testimonials].map((testimonial, index) => (
+              <div
+                key={`${testimonial.name}-${index}`}
+                className="glass-card p-6 rounded-xl hover:scale-105 transition-all duration-300 animate-fade-in-up flex-shrink-0 w-[400px]"
+                style={{ 
+                  animationDelay: `${index * 100}ms`,
+                  willChange: 'transform, opacity'
+                }}
               >
-                <div className="flex items-center mb-4">
-                  <img 
-                    src={testimonial.avatar} 
-                    alt={testimonial.name} 
-                    className="w-12 h-12 rounded-full mr-4 object-cover border-2 border-violet-500"
-                  />
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="text-4xl">{testimonial.avatar}</div>
                   <div>
-                    <p className="font-semibold text-gray-100 font-sans">{testimonial.name}</p>
-                    <p className="text-sm text-gray-400 font-sans">{testimonial.handle}</p>
+                    <h3 className="text-lg font-medium text-gray-100">{testimonial.name}</h3>
+                    <p className="text-sm text-gray-400">{testimonial.role}</p>
                   </div>
-                  <Twitter className="w-5 h-5 text-blue-400 ml-auto" />
                 </div>
-                <p className="text-lg italic text-gray-200 leading-relaxed font-sans mb-4 flex-grow">
-                  {testimonial.quote}
-                </p>
+                <p className="text-gray-300 font-body">{testimonial.content}</p>
               </div>
             ))}
           </div>
@@ -87,4 +95,4 @@ const Testimonials: React.FC = () => {
   );
 };
 
-export default Testimonials; 
+export default React.memo(Testimonials); 

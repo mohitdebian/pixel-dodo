@@ -11,68 +11,14 @@ import { hasEnoughCredits, isEmailVerified as checkEmailVerified, sendVerificati
 import { CreditPurchaseModal } from '@/components/CreditPurchaseModal';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Lazy load components
 const ImageGrid = lazy(() => import('@/components/ImageGrid'));
 const ImageSlideshow = lazy(() => import('@/components/ImageSlideshow'));
 const Testimonials = lazy(() => import('@/components/Testimonials'));
 const ImageCollagePlaceholder = lazy(() => import('@/components/ImageCollagePlaceholder'));
-
-// AI Models data
-const AI_MODELS = [
-  {
-    id: '1',
-    imageUrl: 'slide5.jpg',
-    title: 'Smiling girl',
-    description: 'A smiling young woman standing in a bustling neon-lit Asian street at night, cinematic lighting, high detail, bokeh background, vibrant city vibe',
-  },
-  {
-    id: '2',
-    imageUrl: '/slide4.jpg',
-    title: 'Sunset Drive',
-    description: 'A sleek black sports car driving on a winding coastal road during sunset, golden hour lighting, cinematic style, hyper-realistic',
-  },
-  {
-    id: '3',
-    imageUrl: '/slide1.jpg',
-    title: 'Coffee Moments',
-    description: 'A cup of freshly brewed espresso on a wooden café table, scattered coffee beans, barista in background, warm sunlight through windows, cozy aesthetic',
-  },
-  {
-    id: '4',
-    imageUrl: '/Anime_1.jpg',
-    title: 'Rainfall Warrior',
-    description: 'Dark-haired anime girl with intense eyes wearing a hooded cloak, standing in rain, cinematic lighting, ultra-realistic anime style, mysterious vibe',
-  },
-];
-
-// Example images for the gallery
-const SLIDESHOW_IMAGES = [
-  {
-    url: '/Anime_1.jpg',
-    prompt: 'A serene landscape with mountains and a lake at sunset'
-  },
-  {
-    url: '/examples/example2.jpg',
-    prompt: 'A futuristic cityscape with flying cars and neon lights'
-  },
-  {
-    url: '/examples/example3.jpg',
-    prompt: 'A magical forest with glowing mushrooms and fairy lights'
-  },
-  {
-    url: '/examples/example4.jpg',
-    prompt: 'An underwater scene with bioluminescent creatures'
-  },
-  {
-    url: '/examples/example5.jpg',
-    prompt: 'A steampunk-inspired mechanical dragon'
-  },
-  {
-    url: '/examples/example6.jpg',
-    prompt: 'A cozy cafe interior with warm lighting and vintage decor'
-  }
-];
 
 const Index: React.FC = () => {
   const [prompt, setPrompt] = useState('');
@@ -85,8 +31,65 @@ const Index: React.FC = () => {
   const [isVerificationLoading, setIsVerificationLoading] = useState(false);
   const [showTutorial, setShowTutorial] = useState(true);
   const [tutorialStep, setTutorialStep] = useState(0);
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
-  const tutorialSteps = [
+  // Memoize static data
+  const AI_MODELS = useMemo(() => [
+    {
+      id: '1',
+      imageUrl: 'slide5.jpg',
+      title: 'Smiling girl',
+      description: 'A smiling young woman standing in a bustling neon-lit Asian street at night, cinematic lighting, high detail, bokeh background, vibrant city vibe',
+    },
+    {
+      id: '2',
+      imageUrl: '/slide4.jpg',
+      title: 'Sunset Drive',
+      description: 'A sleek black sports car driving on a winding coastal road during sunset, golden hour lighting, cinematic style, hyper-realistic',
+    },
+    {
+      id: '3',
+      imageUrl: '/slide1.jpg',
+      title: 'Coffee Moments',
+      description: 'A cup of freshly brewed espresso on a wooden café table, scattered coffee beans, barista in background, warm sunlight through windows, cozy aesthetic',
+    },
+    {
+      id: '4',
+      imageUrl: '/Anime_1.jpg',
+      title: 'Rainfall Warrior',
+      description: 'Dark-haired anime girl with intense eyes wearing a hooded cloak, standing in rain, cinematic lighting, ultra-realistic anime style, mysterious vibe',
+    },
+  ], []);
+
+  const SLIDESHOW_IMAGES = useMemo(() => [
+    {
+      url: '/Anime_1.jpg',
+      prompt: 'A serene landscape with mountains and a lake at sunset'
+    },
+    {
+      url: '/examples/example2.jpg',
+      prompt: 'A futuristic cityscape with flying cars and neon lights'
+    },
+    {
+      url: '/examples/example3.jpg',
+      prompt: 'A magical forest with glowing mushrooms and fairy lights'
+    },
+    {
+      url: '/examples/example4.jpg',
+      prompt: 'An underwater scene with bioluminescent creatures'
+    },
+    {
+      url: '/examples/example5.jpg',
+      prompt: 'A steampunk-inspired mechanical dragon'
+    },
+    {
+      url: '/examples/example6.jpg',
+      prompt: 'A cozy cafe interior with warm lighting and vintage decor'
+    }
+  ], []);
+
+  const tutorialSteps = useMemo(() => [
     {
       icon: <Wand2 className="w-12 h-12 text-violet-400" />,
       title: "Welcome to Pixel Magic!",
@@ -102,7 +105,7 @@ const Index: React.FC = () => {
       title: "Explore AI Models",
       description: "Discover fine-tuned models to create images in various styles.",
     },
-  ];
+  ], []);
 
   useEffect(() => {
     const checkVerification = async () => {
@@ -163,15 +166,16 @@ const Index: React.FC = () => {
     }
   }, []);
 
+  // Memoize handlers
   const handlePromptChange = useCallback((value: string) => {
     setPrompt(value);
   }, []);
 
-  const handleApiKeyChange = (newApiKey: string) => {
+  const handleApiKeyChange = useCallback((newApiKey: string) => {
     setApiKey(newApiKey);
-  };
+  }, []);
 
-  const handleResendVerification = async () => {
+  const handleResendVerification = useCallback(async () => {
     try {
       setIsVerificationLoading(true);
       const user = auth.currentUser;
@@ -185,7 +189,7 @@ const Index: React.FC = () => {
     } finally {
       setIsVerificationLoading(false);
     }
-  };
+  }, []);
 
   const handleGenerate = useCallback(async () => {
     if (isGenerating) return;
@@ -275,53 +279,18 @@ const Index: React.FC = () => {
     } finally {
       setIsGenerating(false);
     }
-  }, [
-    prompt, 
-    isApiKeySet, 
-    isGenerating, 
-    setIsEmailVerified, 
-    setIsPurchaseModalOpen
-  ]);
+  }, [prompt, isApiKeySet, isGenerating]);
 
-  const handleNextTutorial = () => {
+  const handleNextTutorial = useCallback(() => {
     if (tutorialStep < tutorialSteps.length - 1) {
       setTutorialStep(tutorialStep + 1);
     } else {
       setShowTutorial(false);
       localStorage.setItem('tutorialShown', 'true');
     }
-  };
+  }, [tutorialStep, tutorialSteps.length]);
 
-  const renderVerificationBanner = () => {
-    const user = auth.currentUser;
-    
-    if (user && isEmailVerified === false) {
-      return (
-        <div className="w-full max-w-3xl mx-auto px-4 py-3 mb-6 glass-card rounded-lg border border-yellow-500/30 animate-fade-in">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm text-white">
-                Please verify your email address to generate images. Check your inbox for a verification link.
-              </p>
-            </div>
-            <Button 
-              size="sm" 
-              onClick={handleResendVerification}
-              disabled={isVerificationLoading}
-              className="flex-shrink-0"
-            >
-              {isVerificationLoading ? 'Sending...' : 'Resend Email'}
-            </Button>
-          </div>
-        </div>
-      );
-    }
-    
-    return null;
-  };
-
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = useCallback(async () => {
     try {
       await loginWithGoogle();
       toast.success('Logged in with Google successfully');
@@ -329,7 +298,7 @@ const Index: React.FC = () => {
       console.error('Google login failed:', error);
       toast.error('Failed to login with Google');
     }
-  };
+  }, []);
 
   const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -361,6 +330,7 @@ const Index: React.FC = () => {
     setIsApiKeySet(false);
   }, []);
 
+  // Memoize rendered components
   const memoizedImageGrid = useMemo(() => (
     <Suspense fallback={<LoadingSpinner />}>
       <ImageGrid images={images} />
@@ -373,59 +343,128 @@ const Index: React.FC = () => {
     </Suspense>
   ), []);
 
+  const renderVerificationBanner = () => {
+    const user = auth.currentUser;
+    
+    if (user && isEmailVerified === false) {
+      return (
+        <div className="w-full max-w-3xl mx-auto px-4 py-3 mb-6 glass-card rounded-lg border border-yellow-500/30 animate-fade-in">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm text-white">
+                Please verify your email address to generate images. Check your inbox for a verification link.
+              </p>
+            </div>
+            <Button 
+              size="sm" 
+              onClick={handleResendVerification}
+              disabled={isVerificationLoading}
+              className="flex-shrink-0"
+            >
+              {isVerificationLoading ? 'Sending...' : 'Resend Email'}
+            </Button>
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
     <>
       <Dialog open={showTutorial} onOpenChange={setShowTutorial}>
         <DialogContent
-          className="w-[90%] max-w-md mx-auto glass-card shadow-2xl animate-fade-in-up p-0 overflow-visible"
+          className="w-[95%] max-w-lg mx-auto glass-card shadow-2xl animate-fade-in-up p-0 overflow-visible"
           style={{
-            background: 'rgba(30, 27, 75, 0.92)',
-            backdropFilter: 'blur(16px)',
-            borderRadius: '1.5rem',
+            background: 'rgba(17, 17, 23, 0.95)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '2rem',
             boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
           }}
           hideClose
         >
-          <div className="absolute inset-0 rounded-2xl pointer-events-none z-0 animate-glow border-4 border-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 opacity-40" />
-          <DialogHeader className="relative z-10 flex flex-col items-center gap-2 pt-12 pb-4 px-6 sm:px-8 w-full">
-            <div className="mb-2">{tutorialSteps[tutorialStep].icon}</div>
-            <DialogTitle className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 text-transparent bg-clip-text drop-shadow-lg text-center font-display tracking-tight animate-fade-in-up">
+          {/* Animated background elements */}
+          <div className="absolute inset-0 rounded-3xl pointer-events-none z-0 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-indigo-500/10 to-purple-500/10 animate-gradient-x"></div>
+            <div className="absolute -top-32 -right-32 w-64 h-64 bg-violet-500/20 rounded-full blur-3xl animate-blob"></div>
+            <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+          </div>
+
+          {/* Glowing border effect */}
+          <div className="absolute inset-0 rounded-3xl pointer-events-none z-0 animate-glow border-4 border-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 opacity-30"></div>
+
+          <DialogHeader className="relative z-10 flex flex-col items-center gap-4 pt-16 pb-8 px-8 w-full">
+            {/* Icon with enhanced glow effect */}
+            <div className="relative mb-2">
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-500/40 to-indigo-500/40 blur-2xl rounded-full animate-pulse"></div>
+              <div className="relative bg-gradient-to-br from-violet-500/20 to-indigo-500/20 p-4 rounded-2xl backdrop-blur-sm border border-white/10">
+                {tutorialSteps[tutorialStep].icon}
+              </div>
+            </div>
+
+            {/* Title with enhanced gradient and animation */}
+            <DialogTitle className="text-3xl sm:text-4xl font-extrabold bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 text-transparent bg-clip-text drop-shadow-lg text-center font-display tracking-tight animate-fade-in-up">
               {tutorialSteps[tutorialStep].title}
             </DialogTitle>
-            <DialogDescription className="text-base sm:text-lg text-indigo-200 font-medium text-center mt-2 animate-fade-in-up animation-delay-200">
+
+            {/* Description with enhanced styling */}
+            <DialogDescription className="text-lg sm:text-xl text-indigo-200/90 font-medium text-center mt-2 animate-fade-in-up animation-delay-200 max-w-md leading-relaxed">
               {tutorialSteps[tutorialStep].description}
             </DialogDescription>
           </DialogHeader>
 
-          {tutorialStep === tutorialSteps.length - 1 && (
-            <div className="relative z-10 flex flex-col items-center gap-3 px-6 sm:px-8 py-4 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 rounded-xl mx-4 animate-fade-in-up animation-delay-300">
-              <div className="flex items-center gap-2 text-green-400 font-medium">
-                <span className="text-xl">✨</span>
-                <span>Get 50 free credits on signup to generate images for free!</span>
+          {/* Progress indicators with enhanced styling */}
+          <div className="relative z-10 flex justify-center items-center gap-4 mt-8">
+            {tutorialSteps.map((_, index) => (
+              <div
+                key={index}
+                className={`relative h-3 w-3 rounded-full transition-all duration-500 ${
+                  index === tutorialStep 
+                    ? 'bg-gradient-to-r from-violet-400 to-indigo-400 scale-150' 
+                    : 'bg-gray-600/50'
+                }`}
+              >
+                {index === tutorialStep && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-indigo-400 rounded-full animate-pulse"></div>
+                )}
               </div>
-              <div className="flex items-center gap-2 text-indigo-400 font-medium">
-                <span className="text-xl">🎨</span>
-                <span>Over 1,500+ images generated!</span>
+            ))}
+          </div>
+
+          {/* Final step special content */}
+          {tutorialStep === tutorialSteps.length - 1 && (
+            <div className="relative z-10 flex flex-col items-center gap-6 px-8 py-8 mt-8 bg-gradient-to-br from-violet-500/10 via-indigo-500/10 to-purple-500/10 rounded-2xl mx-8 animate-fade-in-up animation-delay-300">
+              <div className="flex items-center gap-4 text-green-400 font-medium">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-green-400/20 blur-xl rounded-full animate-pulse"></div>
+                  <span className="relative text-3xl animate-bounce">✨</span>
+                </div>
+                <span className="text-xl">Get 50 free credits on signup!</span>
+              </div>
+              <div className="flex items-center gap-4 text-indigo-400 font-medium">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-indigo-400/20 blur-xl rounded-full animate-pulse"></div>
+                  <span className="relative text-3xl animate-float">🎨</span>
+                </div>
+                <span className="text-xl">Over 1,500+ images generated!</span>
               </div>
             </div>
           )}
 
-          <div className="relative z-10 flex justify-center items-center gap-2 mt-4 mb-8">
-            {tutorialSteps.map((_, index) => (
-              <span
-                key={index}
-                className={`block h-2 w-2 rounded-full transition-colors duration-300 ${
-                  index === tutorialStep ? 'bg-violet-400 scale-150' : 'bg-gray-600'
-                }`}
-              />
-            ))}
-          </div>
-          <div className="relative z-10 flex justify-center mt-10 mb-8 px-6 sm:px-8 w-full">
+          {/* Enhanced button styling */}
+          <div className="relative z-10 flex justify-center mt-8 mb-12 px-8 w-full">
             <Button
               onClick={handleNextTutorial}
-              className="px-8 py-3 text-lg font-bold rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 shadow-lg hover:scale-105 transition-transform duration-200 focus:ring-2 focus:ring-violet-400 focus:ring-offset-2"
+              className="relative px-10 py-4 text-lg font-bold rounded-full bg-gradient-to-r from-violet-500 to-indigo-500 shadow-lg hover:scale-105 transition-all duration-300 focus:ring-2 focus:ring-violet-400 focus:ring-offset-2 group"
             >
-              {tutorialStep === tutorialSteps.length - 1 ? 'Finish' : 'Next'}
+              <span className="relative z-10">
+                {tutorialStep === tutorialSteps.length - 1 ? 'Get Started' : 'Next'}
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-violet-400 to-indigo-400 blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
             </Button>
           </div>
         </DialogContent>
