@@ -139,7 +139,7 @@ export const UserAvatar = () => {
 
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="min-w-[280px] bg-gradient-to-b from-[#1a1a1a] to-[#121212] rounded-xl shadow-2xl p-0 z-50 border border-[#2d2d2d] overflow-hidden animate-in slide-in-from-top-5 fade-in-20 duration-200"
+            className="min-w-[280px] bg-gradient-to-b from-[#1a1a1a] to-[#121212] rounded-xl shadow-2xl p-0 z-50 border border-[#2d2d2d]/20 overflow-hidden animate-in slide-in-from-top-5 fade-in-20 duration-200 backdrop-blur-sm"
             sideOffset={5}
             align="end"
           >
@@ -157,7 +157,7 @@ export const UserAvatar = () => {
                   <p className="text-gray-400 text-sm">Sign in to generate images and manage credits</p>
                 </div>
                 <DropdownMenu.Item
-                  className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium outline-none cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-lg text-white transition-colors"
+                  className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium outline-none cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 rounded-lg text-white transition-all duration-200 shadow-lg shadow-blue-500/20"
                   onSelect={handleGoogleLogin}
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -166,12 +166,12 @@ export const UserAvatar = () => {
                   Continue with Google
                 </DropdownMenu.Item>
                 
-                <div className="mt-4 pt-4 border-t border-[#2d2d2d]">
+                <div className="mt-4 space-y-2">
                   <a 
                     href="https://twitter.com/mohitdebian" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group"
                   >
                     <div className="w-9 h-9 rounded-full bg-[#1DA1F2] flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -197,9 +197,9 @@ export const UserAvatar = () => {
                         window.open('https://mail.google.com/mail/?view=cm&fs=1&to=devbyte.mohit@gmail.com&su=Project%20Inquiry&body=Hello%2C%0A%0AI%20am%20interested%20in%20your%20AI%20Image%20Generation%20Platform.%0A%0ABest%20regards%2C', '_blank');
                       }
                     }}
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group relative overflow-hidden"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group relative overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 animate-pulse"></div>
                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-lg shadow-violet-500/20">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
@@ -214,13 +214,13 @@ export const UserAvatar = () => {
               </div>
             ) : (
               <>
-                <div className="p-6 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+                <div className="p-6 bg-gradient-to-r from-blue-500/5 to-purple-500/5">
                   <div className="flex items-center">
-                    <div className="w-16 h-16 rounded-full overflow-hidden mr-4 ring-2 ring-blue-500 ring-offset-2 ring-offset-[#1a1a1a]">
+                    <div className="w-16 h-16 rounded-full overflow-hidden mr-4 ring-2 ring-blue-500/50 ring-offset-2 ring-offset-[#1a1a1a]">
                       {user.photoURL ? (
                         <img src={user.photoURL} alt={user.displayName || "User"} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-2xl font-medium">
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-blue-700 text-white text-2xl font-medium">
                           {user.displayName?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || 'U'}
                         </div>
                       )}
@@ -233,7 +233,7 @@ export const UserAvatar = () => {
                         {user.email}
                       </div>
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center bg-[#1a1a1a] px-3 py-1 rounded-full text-sm">
+                        <div className="flex items-center bg-white/5 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                           </svg>
@@ -241,7 +241,7 @@ export const UserAvatar = () => {
                           <span className="text-gray-400 ml-1">credits</span>
                         </div>
                         
-                        <div className="flex items-center bg-[#1a1a1a] px-3 py-1 rounded-full text-sm">
+                        <div className="flex items-center bg-white/5 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
                           <SparklesIcon className="h-4 w-4 mr-1 text-indigo-400" />
                           <span className="text-white font-medium">{imagesRemaining}</span>
                           <span className="text-gray-400 ml-1">images remaining</span>
@@ -251,9 +251,9 @@ export const UserAvatar = () => {
                   </div>
                 </div>
                 
-                <div className="p-2">
+                <div className="p-2 space-y-1">
                   <DropdownMenu.Item
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group"
                     onSelect={() => setIsPurchaseModalOpen(true)}
                   >
                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -272,7 +272,7 @@ export const UserAvatar = () => {
                     href="https://twitter.com/mohitdebian" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group"
                   >
                     <div className="w-9 h-9 rounded-full bg-[#1DA1F2] flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="currentColor">
@@ -298,9 +298,9 @@ export const UserAvatar = () => {
                         window.open('https://mail.google.com/mail/?view=cm&fs=1&to=devbyte.mohit@gmail.com&su=Project%20Inquiry&body=Hello%2C%0A%0AI%20am%20interested%20in%20your%20AI%20Image%20Generation%20Platform.%0A%0ABest%20regards%2C', '_blank');
                       }
                     }}
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group relative overflow-hidden"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group relative overflow-hidden"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 animate-pulse"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 animate-pulse"></div>
                     <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-indigo-500 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform shadow-lg shadow-violet-500/20">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z" clipRule="evenodd" />
@@ -313,10 +313,10 @@ export const UserAvatar = () => {
                   </a>
                   
                   <DropdownMenu.Item
-                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-[#2d2d2d] rounded-lg text-white transition-colors group"
+                    className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group"
                     onSelect={handleLogout}
                   >
-                    <div className="w-9 h-9 rounded-full bg-[#2d2d2d] flex items-center justify-center mr-3 group-hover:bg-red-500/20 transition-colors">
+                    <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mr-3 group-hover:bg-red-500/20 transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 group-hover:text-red-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V7.414l-5-5H3zm7 5a1 1 0 10-2 0v4.3a1 1 0 102 0V8zm2.707 7.707a1 1 0 01-1.414 0L8 12.414l-3.293 3.293a1 1 0 01-1.414-1.414l3.293-3.293-3.293-3.293a1 1 0 010-1.414A1 1 0 014.707 6l3.293 3.293L11.293 6a1 1 0 011.414 1.414L9.414 10.707l3.293 3.293a1 1 0 010 1.414z" clipRule="evenodd" />
                       </svg>

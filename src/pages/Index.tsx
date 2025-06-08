@@ -270,7 +270,7 @@ const Index: React.FC = () => {
       if (error instanceof Error && 
          !error.message.includes('Insufficient credits') && 
          !error.message.includes('Email not verified')) {
-        toast.error('Failed to generate image. Please check your API key and try again.', {
+        toast.error('Failed to generate image.', {
           duration: 4000,
           className: "font-medium border border-red-200",
           icon: <Zap className="h-5 w-5 text-red-400 animate-pulse" />,

@@ -107,16 +107,16 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
     // Check if it's an API error
     if (error instanceof Error) {
       if (error.message.includes("API key") || error.message.includes("API client")) {
-        toast.error("Invalid API key. Please check your API key and try again.");
+        toast.error("Contact support for help");
       } else if (error.message.includes("Insufficient credits")) {
         // Don't show the toast again since we already showed it in the credit check
       } else if (error.message.includes("Email not verified")) {
         // Don't show the toast again since we already showed it in the verification check
       } else {
-        toast.error("Failed to generate image. Please try again.");
+        toast.error("Failed to generate img");
       }
     } else {
-      toast.error("Failed to generate image. Please try again.");
+      toast.error("Failed to generate img");
     }
     
     throw error;
