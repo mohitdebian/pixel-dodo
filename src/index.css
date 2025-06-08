@@ -35,45 +35,55 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Custom scrollbar */
+  /* Optimized scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-secondary/30;
+    @apply bg-secondary/20;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary/50 rounded-full;
+    @apply bg-primary/40 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/70;
+    @apply bg-primary/60;
   }
 }
 
 @layer components {
   .glass-card {
     @apply bg-white/5 backdrop-blur-lg border border-white/10;
-    transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    will-change: transform, opacity;
+    perspective: 1000px;
+    will-change: transform;
+    contain: content;
   }
 
   .input-glow {
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-primary/50 focus:border-primary/50 transition duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-primary/50 focus:border-primary/50;
+    transition: all 0.15s ease-out;
+    will-change: box-shadow, border-color;
   }
 
   .button-glow {
-    @apply hover:bg-primary hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] transition-all duration-300;
+    @apply hover:bg-primary hover:shadow-[0_0_15px_rgba(139,92,246,0.5)];
+    transition: all 0.15s ease-out;
+    will-change: background-color, box-shadow;
   }
   
   .bg-size-200 {
     background-size: 200% 100%;
+    will-change: background-position;
   }
   
   .bg-pos-0 {
@@ -86,46 +96,49 @@
   
   .animate-float {
     animation: float 3s ease-in-out infinite;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout;
   }
 
   .animate-pulse {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse 2s ease-in-out infinite;
     will-change: opacity;
+    contain: layout;
   }
 
   .animate-glow {
-    animation: glow 12s ease-in-out infinite;
+    animation: glow 8s ease-in-out infinite;
     will-change: box-shadow;
+    contain: layout;
   }
 
   .animate-gradient-x {
-    animation: gradient-x 15s ease infinite;
+    animation: gradient-x 15s linear infinite;
     background-size: 200% 200%;
     will-change: background-position;
+    contain: layout;
   }
 
   .animate-blob {
-    animation: blob 7s infinite;
+    animation: blob 7s ease-in-out infinite;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout;
   }
 
   .animate-flow {
     animation: flow 30s linear infinite;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout;
   }
 
   .animate-slow-spin {
     animation: slow-spin 3s linear infinite;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout;
   }
 
   .hover\:pause-animation:hover {
@@ -133,162 +146,149 @@
   }
 
   .hover\:scale-105 {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.2s ease-out;
+    transform: translate3d(0, 0, 0);
     will-change: transform;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    contain: layout;
   }
 }
 
 @layer utilities {
   .animate-fade-in {
-    animation: fadeIn 0.7s ease-in-out forwards;
+    animation: fadeIn 0.3s ease-out forwards;
+    contain: layout;
   }
   
   .animate-fade-in-up {
-    animation: fadeInUp 0.7s ease-out forwards;
+    animation: fadeInUp 0.3s ease-out forwards;
+    contain: layout;
   }
   
   .animate-fade-in-down {
-    animation: fadeInDown 0.7s ease-out forwards;
+    animation: fadeInDown 0.3s ease-out forwards;
+    contain: layout;
   }
   
   .animation-delay-200 {
-    animation-delay: 200ms;
+    animation-delay: 100ms;
   }
   
   .animation-delay-300 {
-    animation-delay: 300ms;
+    animation-delay: 150ms;
   }
   
   .animation-delay-500 {
-    animation-delay: 2500ms;
+    animation-delay: 200ms;
   }
   
   .animation-delay-1000 {
-    animation-delay: 1000ms;
+    animation-delay: 300ms;
   }
   
   .animation-delay-2000 {
-    animation-delay: 2000ms;
+    animation-delay: 500ms;
   }
   
   .animation-delay-4000 {
-    animation-delay: 4000ms;
+    animation-delay: 1000ms;
   }
   
   .bg-grid-pattern {
-    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-                      linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
     background-size: 20px 20px;
     will-change: background-position;
+    contain: layout;
   }
   
   .text-shadow {
-    text-shadow: 0 2px 10px rgba(125, 125, 255, 0.5);
+    text-shadow: 0 2px 10px rgba(125, 125, 255, 0.3);
+  }
+
+  .optimize-gpu {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    contain: layout;
+  }
+
+  .reduce-motion {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
 @keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeInUp {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translate3d(0, 20px, 0);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes fadeInDown {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translate3d(0, -10px, 0);
   }
 }
 
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.05),
-                0 0 40px rgba(139, 92, 246, 0.02),
-                0 0 60px rgba(139, 92, 246, 0.01);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.05);
   }
   50% {
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.08),
-                0 0 60px rgba(139, 92, 246, 0.04),
-                0 0 90px rgba(139, 92, 246, 0.02);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.08);
   }
 }
 
 @keyframes gradient-x {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 @keyframes blob {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(20px, -20px) scale(1.1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  75% {
-    transform: translate(-20px, -20px) scale(1.1);
+    transform: translate3d(10px, -10px, 0) scale(1.05);
   }
 }
 
 @keyframes flow {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
 }
 
 @keyframes slow-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

@@ -9,8 +9,20 @@ import { onAuthStateChange } from "./services/auth";
 import { AuthModal } from "./components/AuthModal";
 import { LogIn, Sparkles } from "lucide-react";
 import { Analytics } from "@vercel/analytics/react";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'sonner';
+import AppRoutes from './routes';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 30, // 30 minutes
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => {
   const [user, setUser] = useState<any>(null);
@@ -74,6 +86,8 @@ const App = () => {
           onClose={() => setIsAuthModalOpen(false)}
         />
       </TooltipProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 };

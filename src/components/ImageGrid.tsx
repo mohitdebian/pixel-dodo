@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FixedSizeGrid as Grid } from 'react-window';
 import { GeneratedImage } from '@/services/imageService';
 import { Download, Share2, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 interface ImageGridProps {
   images: GeneratedImage[];
@@ -10,134 +12,158 @@ interface ImageGridProps {
 
 const ImageGrid: React.FC<ImageGridProps> = ({ images }) => {
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
-  const [isDeleting, setIsDeleting] = useState<Set<string>>(new Set());
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Preload images
+  const COLUMN_COUNT = 3;
+  const ROW_HEIGHT = 300;
+  const COLUMN_WIDTH = 300;
+  const GUTTER_SIZE = 16;
+
   useEffect(() => {
-    images.forEach(image => {
-      const img = new Image();
-      img.src = image.url;
-      img.onload = () => {
-        setLoadedImages(prev => new Set([...prev, image.url]));
-      };
-    });
+    const preloadImages = async () => {
+      const newLoadedImages = new Set(loadedImages);
+      for (const image of images) {
+        if (!loadedImages.has(image.url)) {
+          const img = new Image();
+          img.src = image.url;
+          await new Promise((resolve) => {
+            img.onload = resolve;
+          });
+          newLoadedImages.add(image.url);
+        }
+      }
+      setLoadedImages(newLoadedImages);
+    };
+    preloadImages();
   }, [images]);
 
-  const handleDownload = async (image: GeneratedImage) => {
+  const handleDownload = async (imageUrl: string) => {
     try {
-      const response = await fetch(image.url);
+      const response = await fetch(imageUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `pixelmagic-${Date.now()}.png`;
+      a.download = `pixel-magic-${Date.now()}.png`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
       toast.success('Image downloaded successfully!');
     } catch (error) {
-      console.error('Error downloading image:', error);
       toast.error('Failed to download image');
     }
   };
 
-  const handleShare = async (image: GeneratedImage) => {
+  const handleShare = async (imageUrl: string) => {
     try {
       if (navigator.share) {
-        const response = await fetch(image.url);
-        const blob = await response.blob();
-        const file = new File([blob], 'pixelmagic-image.png', { type: 'image/png' });
         await navigator.share({
-          title: 'Check out this AI-generated image!',
-          text: 'Created with PixelMagic',
-          files: [file]
+          title: 'Pixel Magic Generated Image',
+          text: 'Check out this AI-generated image!',
+          url: imageUrl,
         });
+        toast.success('Image shared successfully!');
       } else {
-        await navigator.clipboard.writeText(image.url);
+        await navigator.clipboard.writeText(imageUrl);
         toast.success('Image URL copied to clipboard!');
       }
     } catch (error) {
-      console.error('Error sharing image:', error);
       toast.error('Failed to share image');
     }
   };
 
-  const handleDelete = async (image: GeneratedImage) => {
+  const handleDelete = async (imageId: string) => {
+    if (isDeleting) return;
+    setIsDeleting(true);
     try {
-      setIsDeleting(prev => new Set([...prev, image.url]));
       // Add your delete logic here
       toast.success('Image deleted successfully!');
     } catch (error) {
-      console.error('Error deleting image:', error);
       toast.error('Failed to delete image');
     } finally {
-      setIsDeleting(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(image.url);
-        return newSet;
-      });
+      setIsDeleting(false);
     }
   };
 
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {images.map((image, index) => (
-        <div
-          key={image.url}
-          className="glass-card rounded-xl overflow-hidden group hover:scale-105 transition-all duration-300 animate-fade-in-up"
-          style={{ animationDelay: `${index * 100}ms` }}
-        >
-          <div className="aspect-square relative bg-gradient-to-br from-violet-500/20 to-indigo-500/20">
-            {!loadedImages.has(image.url) && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-slow-spin"></div>
-              </div>
-            )}
-            <img
-              src={image.url}
-              alt={image.prompt}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
-                loadedImages.has(image.url) ? 'opacity-100' : 'opacity-0'
-              }`}
-              loading="lazy"
-              decoding="async"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-white text-sm font-medium mb-4 line-clamp-2">{image.prompt}</p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-white hover:text-violet-400 hover:bg-white/10"
-                    onClick={() => handleDownload(image)}
-                  >
-                    <Download className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-white hover:text-indigo-400 hover:bg-white/10"
-                    onClick={() => handleShare(image)}
-                  >
-                    <Share2 className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-white hover:text-red-400 hover:bg-white/10"
-                    onClick={() => handleDelete(image)}
-                    disabled={isDeleting.has(image.url)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
+  const Cell = useCallback(({ columnIndex, rowIndex, style }: any) => {
+    const index = rowIndex * COLUMN_COUNT + columnIndex;
+    const image = images[index];
+    
+    if (!image) return null;
+
+    return (
+      <div style={{
+        ...style,
+        padding: GUTTER_SIZE,
+      }}>
+        <div className="relative group rounded-lg overflow-hidden bg-secondary/20 animate-fade-in">
+          {!loadedImages.has(image.url) && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 border-4 border-violet-500/20 border-t-violet-500 rounded-full animate-slow-spin"></div>
+            </div>
+          )}
+          <img
+            src={image.url}
+            alt={image.prompt}
+            className={`w-full h-full object-cover transition-opacity duration-300 ${
+              loadedImages.has(image.url) ? 'opacity-100' : 'opacity-0'
+            }`}
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="absolute bottom-0 left-0 right-0 p-4">
+              <p className="text-white text-sm mb-2 line-clamp-2">{image.prompt}</p>
+              <div className="flex gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                  onClick={() => handleDownload(image.url)}
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                  onClick={() => handleShare(image.url)}
+                >
+                  <Share2 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                  onClick={() => handleDelete(image.id)}
+                  disabled={isDeleting}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
-      ))}
+      </div>
+    );
+  }, [images, loadedImages, isDeleting]);
+
+  return (
+    <div className="w-full h-full">
+      <AutoSizer>
+        {({ height, width }) => (
+          <Grid
+            columnCount={COLUMN_COUNT}
+            columnWidth={COLUMN_WIDTH}
+            height={height}
+            rowCount={Math.ceil(images.length / COLUMN_COUNT)}
+            rowHeight={ROW_HEIGHT}
+            width={width}
+          >
+            {Cell}
+          </Grid>
+        )}
+      </AutoSizer>
     </div>
   );
 };
