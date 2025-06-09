@@ -12,12 +12,7 @@ const CREDIT_UPDATE_EVENT = 'creditUpdate';
 let together: Together | null = null;
 
 export function initializeTogether(apiKey: string) {
-  // Try to use the provided API key or fall back to environment variable (if set)
-  const key = apiKey || import.meta.env.VITE_TOGETHER_API_KEY;
-  if (!key) {
-    throw new Error("API key is required");
-  }
-  together = new Together({ apiKey: key });
+  together = new Together({ apiKey });
   return together;
 }
 
@@ -25,13 +20,13 @@ export interface GeneratedImage {
   id: string;
   url: string;
   prompt: string;
-  timestamp?: number;
+  timestamp: number;
 }
 
 export async function generateImage(prompt: string): Promise<GeneratedImage> {
   try {
     if (!together) {
-      throw new Error("API client is not initialized. Please provide an API key first.");
+      throw new Error("API client is not initialized");
     }
 
     const user = auth.currentUser;
@@ -43,22 +38,22 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
     const verified = await isEmailVerified(user.uid);
     if (!verified) {
       toast.error("Please verify your email before generating images.");
-      throw new Error("Email not verified. Please check your inbox for verification link.");
+      throw new Error("Email not verified");
     }
 
     // Check if user has enough credits before making the API request
     const hasCredits = await hasEnoughCredits(user.uid);
     if (!hasCredits) {
       toast.error("Insufficient credits. Please purchase more credits to continue.");
-      throw new Error("Insufficient credits. Please purchase more credits to continue.");
+      throw new Error("Insufficient credits");
     }
 
     // Generate the image
     const response = await together.images.create({
       model: "black-forest-labs/FLUX.1-schnell-Free",
       prompt: prompt,
-      steps: 4, // Steps must be between 1-4
-      n: 1 // Generate one image
+      steps: 4,
+      n: 1
     });
 
     const imageUrl = response.data[0].url;
@@ -85,40 +80,22 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
         url: imageUrl,
         prompt,
         createdAt: timestamp.toISOString(),
-        timestamp: timestamp, // Firestore timestamp
+        timestamp: timestamp,
         date: timestamp.toLocaleDateString(),
         time: timestamp.toLocaleTimeString()
       };
       
-      // Update the user's document with the last image info
       await updateDoc(doc(db, 'users', user.uid), {
         lastGeneratedImage: lastImageData
       });
-      console.log('Last image saved to user document in Firestore');
     } catch (saveError) {
       console.error('Error saving last image to Firestore:', saveError);
-      // Continue even if saving to Firestore fails
     }
     
     return generatedImage;
   } catch (error) {
     console.error("Error generating image:", error);
-    
-    // Check if it's an API error
-    if (error instanceof Error) {
-      if (error.message.includes("API key") || error.message.includes("API client")) {
-        toast.error("Contact support for help");
-      } else if (error.message.includes("Insufficient credits")) {
-        // Don't show the toast again since we already showed it in the credit check
-      } else if (error.message.includes("Email not verified")) {
-        // Don't show the toast again since we already showed it in the verification check
-      } else {
-        toast.error("Failed to generate img");
-      }
-    } else {
-      toast.error("Failed to generate img");
-    }
-    
+    toast.error("Failed to generate img");
     throw error;
   }
 }

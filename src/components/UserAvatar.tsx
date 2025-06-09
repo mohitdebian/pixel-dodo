@@ -5,8 +5,8 @@ import { loginWithGoogle, logout, getUserCredits, onAuthStateChange, onCreditUpd
 import { toast } from 'sonner';
 import { CreditPurchaseModal } from './CreditPurchaseModal';
 import { SparklesIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 
 // Credits needed per image generation
 const CREDITS_PER_GENERATION = 10;
@@ -18,6 +18,18 @@ export const UserAvatar = () => {
   const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
+
+  // Show welcome toast on component mount
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    if (!hasSeenWelcome) {
+      toast.success('Welcome to Pixel Magic! 🎨', {
+        description: 'Generate stunning AI images with just a few clicks.',
+        duration: 5000,
+      });
+      localStorage.setItem('hasSeenWelcome', 'true');
+    }
+  }, []);
 
   useEffect(() => {
     let unsubscribeCredits: (() => void) | undefined;
@@ -118,10 +130,10 @@ export const UserAvatar = () => {
                 </svg>
               </div>
             ) : user && user.photoURL ? (
-              <img 
+              <img
                 src={user.photoURL} 
                 alt={user.displayName || "User"} 
-                className="w-full h-full object-cover" 
+                className="w-full h-full object-cover"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-blue-600 text-white text-xl font-medium">
@@ -250,7 +262,7 @@ export const UserAvatar = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="p-2 space-y-1">
                   <DropdownMenu.Item
                     className="flex items-center px-4 py-3 text-sm outline-none cursor-pointer hover:bg-white/5 rounded-lg text-white transition-all duration-200 group"
@@ -268,7 +280,7 @@ export const UserAvatar = () => {
                     </div>
                   </DropdownMenu.Item>
 
-                  <a 
+                  <a
                     href="https://twitter.com/mohitdebian" 
                     target="_blank" 
                     rel="noopener noreferrer"
@@ -284,8 +296,8 @@ export const UserAvatar = () => {
                       <div className="text-gray-400 text-xs">@mohitdebian</div>
                     </div>
                   </a>
-                  
-                  <a 
+
+                  <a
                     href="mailto:devbyte.mohit@gmail.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
@@ -318,7 +330,7 @@ export const UserAvatar = () => {
                   >
                     <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center mr-3 group-hover:bg-red-500/20 transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 group-hover:text-red-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V7.414l-5-5H3zm7 5a1 1 0 10-2 0v4.3a1 1 0 102 0V8zm2.707 7.707a1 1 0 01-1.414 0L8 12.414l-3.293 3.293a1 1 0 01-1.414-1.414l3.293-3.293-3.293-3.293a1 1 0 010-1.414A1 1 0 014.707 6l3.293 3.293L11.293 6a1 1 0 011.414 1.414L9.414 10.707l3.293 3.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                        <path fillRule="evenodd" d="M3 3a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <div>

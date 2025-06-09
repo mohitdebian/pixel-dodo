@@ -141,14 +141,17 @@ export const loginWithGoogle = async (): Promise<{ user: User; credits: number }
   }
 };
 
-export const sendVerificationEmail = async (user: User): Promise<void> => {
+export const sendVerificationEmail = async (userId: string): Promise<void> => {
   try {
-    console.log('Sending verification email to:', user.email);
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error('No user logged in');
+    }
+    
     await sendEmailVerification(user);
-    toast.success('Verification email sent! Please check your inbox.');
+    console.log('Verification email sent successfully');
   } catch (error) {
     console.error('Failed to send verification email:', error);
-    toast.error('Failed to send verification email. Please try again later.');
     throw error;
   }
 };
