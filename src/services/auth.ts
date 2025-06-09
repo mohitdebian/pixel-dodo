@@ -25,19 +25,36 @@ const logError = (error: any, context: string) => {
 // Function to clean up duplicate user documents
 const cleanupDuplicateUsers = async (email: string, currentUserId: string) => {
   try {
+    console.log('Starting cleanup of duplicate users for email:', email);
     const usersRef = collection(db, 'users');
     const q = query(usersRef, where('email', '==', email));
     const querySnapshot = await getDocs(q);
     
+    const duplicateDocs = querySnapshot.docs.filter(doc => doc.id !== currentUserId);
+    console.log(`Found ${duplicateDocs.length} duplicate documents to clean up`);
+    
+    if (duplicateDocs.length === 0) {
+      console.log('No duplicate documents found');
+      return;
+    }
+    
     // Delete all documents except the current user's document
-    const deletePromises = querySnapshot.docs
-      .filter(doc => doc.id !== currentUserId)
-      .map(doc => deleteDoc(doc.ref));
+    const deletePromises = duplicateDocs.map(async (doc) => {
+      try {
+        await deleteDoc(doc.ref);
+        console.log(`Successfully deleted duplicate document: ${doc.id}`);
+      } catch (deleteError) {
+        console.error(`Error deleting document ${doc.id}:`, deleteError);
+        // Continue with other deletions even if one fails
+      }
+    });
     
     await Promise.all(deletePromises);
-    console.log('Cleaned up duplicate user documents');
+    console.log('Cleanup of duplicate user documents completed');
   } catch (error) {
-    console.error('Error cleaning up duplicate users:', error);
+    console.error('Error during cleanup of duplicate users:', error);
+    // Don't throw the error, just log it and continue
+    // This prevents the signup/login process from failing due to cleanup issues
   }
 };
 

@@ -95,6 +95,9 @@ export async function generateImage(prompt: string): Promise<GeneratedImage> {
     return generatedImage;
   } catch (error) {
     console.error("Error generating image:", error);
+    if (error instanceof Error && error.message === "Insufficient credits") {
+      throw error; // Re-throw the insufficient credits error
+    }
     toast.error("Failed to generate img");
     throw error;
   }

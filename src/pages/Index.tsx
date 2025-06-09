@@ -139,9 +139,13 @@ const Index: React.FC = () => {
       const image = await generateImage(prompt);
       setImages(prev => [image, ...prev]);
       toast.success('Image generated successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating image:', error);
-      toast.error('Failed to generate img');
+      if (error.message === 'Insufficient credits') {
+        setIsPurchaseModalOpen(true);
+      } else {
+        toast.error('Failed to generate img');
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -155,6 +159,11 @@ const Index: React.FC = () => {
   }, [handleGenerate]);
 
   const handlePurchaseCredits = useCallback(() => {
+    const user = auth.currentUser;
+    if (!user) {
+      toast.error('Please sign in to purchase credits');
+      return;
+    }
     setIsPurchaseModalOpen(true);
   }, []);
 
