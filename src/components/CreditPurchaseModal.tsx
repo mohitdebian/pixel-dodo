@@ -12,9 +12,9 @@ interface CreditPurchaseModalProps {
 }
 
 const CREDIT_PACKAGES = [
-  { amount: 100, price: 15, popular: false, icon: "✨" },  // 10 images for $15 (~$1.5/image)
-  { amount: 500, price: 50, popular: true, icon: "🔥" },  // 50 images for $50 ($1/image)
-  { amount: 1000, price: 90, popular: false, icon: "⚡" }, // 100 images for $90 ($0.9/image)
+  { amount: 100, price: 3, popular: false, icon: "✨" },  // Basic: 100 credits for $3
+  { amount: 500, price: 10, popular: true, icon: "🔥" },  // Best Value: 500 credits for $10
+  { amount: 1000, price: 18, popular: false, icon: "⚡" }, // Pro Pack: 1000 credits for $18
 ];  
 
 declare global {
@@ -24,14 +24,13 @@ declare global {
 }
 
 // Razorpay API credentials
-// const RAZORPAY_KEY_ID = "rzp_test_BRLNwkXJVOGoQE";
 const RAZORPAY_KEY_ID = "rzp_live_xruFKEcNeWmzBk"; // Live key
 
-// Exchange rate: INR to USD (as of current date)
-const INR_TO_USD_RATE = 0.012; // 1 INR = 0.012 USD (approximately)
+// Exchange rate: USD to INR (as of current date)
+const USD_TO_INR_RATE = 83; // 1 USD = 83 INR (approximately)
 
-const convertInrToUsd = (inrAmount: number): number => {
-  return parseFloat((inrAmount * INR_TO_USD_RATE).toFixed(4));
+const convertUsdToInr = (usdAmount: number): number => {
+  return Math.round(usdAmount * USD_TO_INR_RATE);
 };
 
 export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseModalProps) => {
@@ -44,7 +43,7 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
     const user = auth.currentUser;
     if (user) {
       setUserDetails({
-        name: user.displayName || 'User',
+        name: user.displayName ? user.displayName.replace(/[^a-zA-Z0-9\s]/g, '') : 'User',
         email: user.email || ''
       });
     }
@@ -72,10 +71,10 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
       // Create a Razorpay checkout instance
       const options = {
         key: RAZORPAY_KEY_ID,
-        amount: price * 100, // Amount in paise
+        amount: convertUsdToInr(price) * 100, // Convert USD to INR and then to paise
         currency: "INR",
         name: "Pixel Magic Credits",
-        description: `Purchase ${amount} credits (₹${price} | $${convertInrToUsd(price)})`,
+        description: `Purchase ${amount} credits ($${price})`,
         modal: {
           ondismiss: () => {
             setIsLoading(false);
@@ -105,7 +104,7 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
           color: "#3B82F6"
         },
         notes: {
-          currency_conversion: `Equivalent to $${convertInrToUsd(price)} USD`
+          currency_conversion: `$${price} USD`
         }
       };
       
@@ -127,13 +126,12 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
 
   const getValueText = (amount: number, price: number) => {
     const pricePerCredit = price / amount;
-    const costPerImage = (price / amount) * 10; // Cost per image (10 credits per image)
     
     if (amount === 100) return 'Basic';
     if (amount === 500) return 'Best Value';
     if (amount === 1000) return 'Pro Pack';
     
-    return `₹${(pricePerCredit).toFixed(2)} | $${convertInrToUsd(pricePerCredit).toFixed(4)} per credit`;
+    return `$${(pricePerCredit).toFixed(4)} per credit`;
   };
 
   return (
@@ -144,6 +142,9 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
           <DialogDescription className="text-gray-400 text-sm mt-1">
             Purchase credits to generate more amazing images
           </DialogDescription>
+          <p className="text-violet-400 text-sm mt-2">
+            10 credits per image generation
+          </p>
         </DialogHeader>
         
         <div className="grid gap-3 py-3">
@@ -169,16 +170,11 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
                     <div>
                       <h3 className="text-white font-bold text-lg">{pkg.amount} Credits</h3>
                       <p className="text-blue-400 text-xs">{getValueText(pkg.amount, pkg.price)}</p>
-                      <p className="text-gray-300 text-xs">
-                        ₹{((pkg.price / pkg.amount) * 10).toFixed(2)} | ${convertInrToUsd((pkg.price / pkg.amount) * 10).toFixed(2)} per image
-                      </p>
                     </div>
                   </div>
                   <div className="text-white text-xl font-bold">
                     <div className="flex items-center gap-1">
-                      <span>₹{pkg.price}</span>
-                      <span className="text-white">|</span>
-                      <span>${convertInrToUsd(pkg.price).toFixed(2)}</span>
+                      <span>${pkg.price}</span>
                     </div>
                   </div>
                 </div>

@@ -31,6 +31,23 @@ try {
       }
     })
     .catch(err => console.log('Analytics not supported:', err));
+
+  // Configure allowed origins for Firebase Auth
+  auth.useDeviceLanguage();
+  auth.settings.appVerificationDisabledForTesting = false;
+
+  // Add allowed origins for Firebase Auth
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://pixel-magic-ai.web.app',
+    'https://pixel-magic-ai.firebaseapp.com',
+    'https://082e-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
+  ];
+
+  // Set allowed origins in Firebase Auth
+  auth.settings.appVerificationDisabledForTesting = false;
+  auth.settings.appVerificationDisabledForTesting = allowedOrigins.includes(window.location.origin);
 } catch (error) {
   console.error('Error initializing Firebase:', error);
   throw error;
