@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
@@ -12,26 +14,38 @@ interface CreditPurchaseModalProps {
 }
 
 const CREDIT_PACKAGES = [
-  { amount: 100, price: 3, popular: false, icon: "✨" },  // Basic: 100 credits for $3
-  { amount: 500, price: 10, popular: true, icon: "🔥" },  // Best Value: 500 credits for $10
-  { amount: 1000, price: 18, popular: false, icon: "⚡" }, // Pro Pack: 1000 credits for $18
+  { 
+    amount: 100, 
+    price: 3, 
+    popular: false, 
+    icon: "✨",
+    productId: "pdt_pXCCBMDtusTUcsrB6KECY"  // 100 Credits
+  },
+  { 
+    amount: 500, 
+    price: 10, 
+    popular: true, 
+    icon: "🔥",
+    productId: "pdt_QcERrcHmG3kzIBR0Su4Sc"  // 500 Credits
+  },
+  { 
+    amount: 1000, 
+    price: 18, 
+    popular: false, 
+    icon: "⚡",
+    productId: "pdt_g1vldnHU4iWPsnPWuNfBF"  // 1000 Credits
+  },
 ];  
 
+// Declare Dodo global type
 declare global {
   interface Window {
-    Razorpay: any;
+    Dodo: any;
   }
 }
 
-// Razorpay API credentials
-const RAZORPAY_KEY_ID = "rzp_live_xruFKEcNeWmzBk"; // Live key
-
-// Exchange rate: USD to INR (as of current date)
-const USD_TO_INR_RATE = 83; // 1 USD = 83 INR (approximately)
-
-const convertUsdToInr = (usdAmount: number): number => {
-  return Math.round(usdAmount * USD_TO_INR_RATE);
-};
+// Dodo API credentials
+const DODO_API_KEY = "DiAdnIuZR0K9EOry.cPCHt-W42PjQrZXoAWRm4Myc94FhUOX1VeCN7gcJEdKlWtZ2";
 
 export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,89 +63,34 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
     }
   }, []);
 
-  useEffect(() => {
-    // Load Razorpay script
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
-  }, []);
-
-  const handlePurchase = async (amount: number, price: number) => {
+  const handlePurchase = async (amount: number, price: number, productId: string) => {
     try {
       setIsLoading(true);
       setSelectedPackage(amount);
-      
-      // Create a Razorpay checkout instance
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: convertUsdToInr(price) * 100, // Convert USD to INR and then to paise
-        currency: "INR",
-        name: "Pixel Magic Credits",
-        description: `Purchase ${amount} credits ($${price})`,
-        modal: {
-          ondismiss: () => {
-            setIsLoading(false);
-            setSelectedPackage(null);
-          },
-          confirm_close: true,
-          escape: false,
-          backdropClose: false
-        },
-        handler: async function(response: any) {
-          if (response.razorpay_payment_id) {
-            // Process the credit purchase after successful payment
-            const success = await purchaseCredits(userId, amount, price);
-            if (success) {
-              toast.success(`Successfully purchased ${amount} credits!`);
-              onClose();
-            } else {
-              toast.error('Failed to process credits. Please contact support.');
-            }
-          }
-        },
-        prefill: {
-          name: userDetails.name,
-          email: userDetails.email
-        },
-        theme: {
-          color: "#3B82F6"
-        },
-        notes: {
-          currency_conversion: `$${price} USD`
-        }
-      };
-      
-      // Close our modal before opening Razorpay
-      onClose();
-      
-      // Create a new instance of Razorpay
-      const razorpay = new window.Razorpay(options);
-      razorpay.open();
+
+      // Construct the payment URL with the correct Dodo checkout domain and redirect URL
+      const baseUrl = 'https://test.checkout.dodopayments.com/buy';
+      // Use the current active ngrok URL for redirection
+      const redirectUrl = 'https://05b7-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app/dodo-redirect';
+      const paymentUrl = `${baseUrl}/${productId}?quantity=1&redirect_url=${encodeURIComponent(redirectUrl)}`;
+
+      // Redirect to Dodo checkout
+      window.location.href = paymentUrl;
       
     } catch (error) {
       console.error('Purchase error:', error);
-      toast.error('Failed to initiate payment. Please try again.');
-    } finally {
+      toast.error(error instanceof Error ? error.message : 'Failed to initiate payment. Please try again.');
       setIsLoading(false);
       setSelectedPackage(null);
     }
   };
 
   const getValueText = (amount: number, price: number) => {
-    const pricePerCredit = price / amount;
-    
     if (amount === 100) return 'Basic';
     if (amount === 500) return 'Best Value';
     if (amount === 1000) return 'Pro Pack';
     
-    return `$${(pricePerCredit).toFixed(4)} per credit`;
+    return `$${(price / amount).toFixed(4)} per credit`;
   };
 
   return (
@@ -185,7 +144,7 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
                       ? 'bg-blue-600 hover:bg-blue-700' 
                       : 'bg-[#2d2d2d] hover:bg-[#3d3d3d]'
                   }`}
-                  onClick={() => handlePurchase(pkg.amount, pkg.price)}
+                  onClick={() => handlePurchase(pkg.amount, pkg.price, pkg.productId)}
                   disabled={isLoading}
                 >
                   {isLoading && selectedPackage === pkg.amount ? (
@@ -206,7 +165,7 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
         </div>
         
         <div className="mt-1 text-center text-xs text-gray-500">
-          Secure payments powered by Razorpay.
+          Secure payments powered by Dodo.
         </div>
       </DialogContent>
     </Dialog>

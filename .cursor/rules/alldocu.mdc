@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+- You can @ files here
+- You can use markdown but dont have to
+- Always reference and consider all documentation files that have been added to the workspace.
+
+- When answering questions, writing code, or refactoring, cross-check behavior, interfaces, and edge cases  against the documentation.

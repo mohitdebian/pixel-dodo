@@ -17,7 +17,7 @@ export default defineConfig({
       'localhost',
       'pixel-magic-ai.web.app',
       'pixel-magic-ai.firebaseapp.com',
-      '082e-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
+      '05b7-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
     ],
     headers: {
       'Access-Control-Allow-Origin': '*',

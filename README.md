@@ -1,70 +1,78 @@
-# Welcome to your Lovable project
+# Pixel Magic - AI Image Generation Platform
 
-## Project info
+A web application that allows users to generate AI images using credits. Built with React, Firebase, and Dodo Payments integration.
 
-**URL**: https://lovable.dev/projects/a386473c-f3c8-4eb9-9f91-c6fe91f46365
+## Features
 
-## How can I edit this code?
+- User authentication with Firebase
+- Credit-based system for image generation
+- Secure payment processing with Dodo Payments
+- Real-time credit updates
+- Responsive design
 
-There are several ways of editing your application.
+## Prerequisites
 
-**Use Lovable**
+- Node.js (v14 or higher)
+- Firebase account
+- Dodo Payments account
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a386473c-f3c8-4eb9-9f91-c6fe91f46365) and start prompting.
+## Environment Variables
 
-Changes made via Lovable will be committed automatically to this repo.
+Create a `.env` file in the root directory with the following variables:
 
-**Use your preferred IDE**
+```env
+# Firebase
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# Dodo Payments
+DODO_API_KEY=your_dodo_api_key
+DODO_WEBHOOK_SECRET=your_webhook_secret
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Installation
 
-Follow these steps:
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/pixel-magic.git
+cd pixel-magic
+```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Install dependencies:
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Project Structure
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+pixel-magic/
+├── src/
+│   ├── components/     # React components
+│   ├── pages/         # Page components
+│   ├── services/      # API and service functions
+│   └── utils/         # Utility functions
+├── public/            # Static files
+└── dodo-backend/      # Payment processing backend
+```
 
-**Use GitHub Codespaces**
+## Contributing
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## What technologies are used for this project?
+## License
 
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/a386473c-f3c8-4eb9-9f91-c6fe91f46365) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
-# PIXEL-MAGIC
+This project is licensed under the MIT License - see the LICENSE file for details.
