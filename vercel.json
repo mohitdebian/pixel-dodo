@@ -1,7 +1,13 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "api/webhook.js",
+      "use": "@vercel/node"
+    }
+  ],
   "functions": {
-    "api/webhook.cjs": {
+    "api/webhook.js": {
       "memory": 1024,
       "maxDuration": 10
     }
@@ -9,11 +15,11 @@
   "routes": [
     {
       "src": "/api/webhook",
-      "dest": "/api/webhook.cjs"
+      "dest": "/api/webhook.js"
     },
     {
       "src": "/dodo-redirect",
-      "dest": "/api/webhook.cjs"
+      "dest": "/api/webhook.js"
     }
   ]
 } 
