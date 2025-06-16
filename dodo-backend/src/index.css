@@ -1,0 +1,294 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 263.4 70% 50.4%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Optimized scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-secondary/20;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/40 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary/60;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-lg border border-white/10;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    contain: content;
+  }
+
+  .input-glow {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-primary/50 focus:border-primary/50;
+    transition: all 0.15s ease-out;
+    will-change: box-shadow, border-color;
+  }
+
+  .button-glow {
+    @apply hover:bg-primary hover:shadow-[0_0_15px_rgba(139,92,246,0.5)];
+    transition: all 0.15s ease-out;
+    will-change: background-color, box-shadow;
+  }
+  
+  .bg-size-200 {
+    background-size: 200% 100%;
+    will-change: background-position;
+  }
+  
+  .bg-pos-0 {
+    background-position: 0% 0%;
+  }
+  
+  .bg-pos-100 {
+    background-position: 100% 0%;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+    will-change: opacity;
+    contain: layout;
+  }
+
+  .animate-glow {
+    animation: glow 8s ease-in-out infinite;
+    will-change: box-shadow;
+    contain: layout;
+  }
+
+  .animate-gradient-x {
+    animation: gradient-x 15s linear infinite;  
+    background-size: 200% 200%;
+    will-change: background-position;
+    contain: layout;
+  }
+
+  .animate-blob {
+    animation: blob 7s ease-in-out infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout;
+  }
+
+  .animate-flow {
+    animation: flow 30s linear infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout;
+  }
+
+  .animate-slow-spin {
+    animation: slow-spin 3s linear infinite;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout;
+  }
+
+  .hover\:pause-animation:hover {
+    animation-play-state: paused;
+  }
+
+  .hover\:scale-105 {
+    transition: transform 0.2s ease-out;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    contain: layout;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+    contain: layout;
+  }
+  
+  .animate-fade-in-up {
+    animation: fadeInUp 0.3s ease-out forwards;
+    contain: layout;
+  }
+  
+  .animate-fade-in-down {
+    animation: fadeInDown 0.3s ease-out forwards;
+    contain: layout;
+  }
+  
+  .animation-delay-200 {
+    animation-delay: 100ms;
+  }
+  
+  .animation-delay-300 {
+    animation-delay: 150ms;
+  }
+  
+  .animation-delay-500 {
+    animation-delay: 200ms;
+  }
+  
+  .animation-delay-1000 {
+    animation-delay: 300ms;
+  }
+  
+  .animation-delay-2000 {
+    animation-delay: 500ms;
+  }
+  
+  .animation-delay-4000 {
+    animation-delay: 1000ms;
+  }
+  
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    will-change: background-position;
+    contain: layout;
+  }
+  
+  .text-shadow {
+    text-shadow: 0 2px 10px rgba(125, 125, 255, 0.3);
+  }
+
+  .optimize-gpu {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+    contain: layout;
+  }
+
+  .reduce-motion {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.08);
+  }
+}
+
+@keyframes gradient-x {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10px, -10px, 0) scale(1.05);
+  }
+}
+
+@keyframes flow {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes slow-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

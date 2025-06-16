@@ -76,16 +76,31 @@ app.get('/dodo-redirect', (req, res) => {
   console.log('Payment ID:', payment_id);
   console.log('Status:', status);
   
+  // Get the frontend URL from environment variable or use default
+  const frontendUrl = process.env.MAINAPP_URL || 'http://localhost:5173';
+  
   // Redirect to the frontend application's root URL with payment parameters
   if (status === 'success' || status === 'completed' || status === 'succeeded') {
-    return res.redirect(`http://localhost:5173/?payment_id=${payment_id}&status=succeeded`);
+    return res.redirect(`${frontendUrl}/?payment_id=${payment_id}&status=succeeded`);
   } else {
-    return res.redirect(`http://localhost:5173/?payment_id=${payment_id}&status=failed`);
+    return res.redirect(`${frontendUrl}/?payment_id=${payment_id}&status=failed`);
   }
 });
 
 app.post('/api/dodo-webhook', async (req, res) => {
   const payload = req.body;
+
+  // Verify webhook signature if secret is available
+  if (process.env.WEBHOOK_SECRET) {
+    const signature = req.headers['dodo-signature'];
+    const hmac = crypto.createHmac('sha256', process.env.WEBHOOK_SECRET);
+    const calculatedSignature = hmac.update(JSON.stringify(payload)).digest('hex');
+    
+    if (signature !== calculatedSignature) {
+      console.error('Invalid webhook signature');
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+  }
 
   // Log the event for debugging
   console.log('Received webhook:');
@@ -171,6 +186,14 @@ app.post('/api/dodo-webhook', async (req, res) => {
   }
 });
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Frontend URL: ${process.env.MAINAPP_URL || 'http://localhost:5173'}`);
 });

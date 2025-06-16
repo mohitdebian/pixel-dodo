@@ -42,7 +42,7 @@ try {
     'http://localhost:3000',
     'https://pixel-magic-ai.web.app',
     'https://pixel-magic-ai.firebaseapp.com',
-    'https://05b7-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
+    'https://4d40-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
   ];
 
   // Set allowed origins in Firebase Auth

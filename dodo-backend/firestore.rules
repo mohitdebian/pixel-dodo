@@ -1,0 +1,38 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is accessing their own document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Helper function to check if user is accessing a document with their email
+    function hasMatchingEmail(email) {
+      return isAuthenticated() && request.auth.token.email == email;
+    }
+
+    // Users collection rules
+    match /users/{userId} {
+      // Allow read if user is authenticated and accessing their own document
+      // OR if user is authenticated (for Explore page)
+      allow read: if isAuthenticated();
+      
+      // Allow create if user is authenticated and creating their own document
+      allow create: if isOwner(userId);
+      
+      // Allow update if user is authenticated and updating their own document
+      allow update: if isOwner(userId);
+      
+      // Allow delete if user is authenticated and deleting their own document
+      // OR if the document's email matches the authenticated user's email
+      allow delete: if isOwner(userId) || 
+        (isAuthenticated() && resource.data.email == request.auth.token.email);
+    }
+  }
+} 
