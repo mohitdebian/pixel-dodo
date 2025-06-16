@@ -71,7 +71,7 @@ export const CreditPurchaseModal = ({ isOpen, onClose, userId }: CreditPurchaseM
       // Construct the payment URL with the correct Dodo checkout domain and redirect URL
       const baseUrl = 'https://test.checkout.dodopayments.com/buy';
       // Use the current active ngrok URL for redirection
-      const redirectUrl = 'https://4d40-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app/dodo-redirect';
+      const redirectUrl = 'https://pixeldodo.vercel.app/dodo-redirect';
       const paymentUrl = `${baseUrl}/${productId}?quantity=1&redirect_url=${encodeURIComponent(redirectUrl)}`;
 
       // Redirect to Dodo checkout
