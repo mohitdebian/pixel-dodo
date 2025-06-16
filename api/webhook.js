@@ -85,7 +85,7 @@ module.exports = async (req, res) => {
     console.log('Status:', status);
     
     // Get the frontend URL from environment variable or use default
-    const frontendUrl = process.env.MAINAPP_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.MAINAPP_URL || 'https://pixeldodo.vercel.app';
     
     // Redirect to the frontend application's root URL with payment parameters
     if (status === 'success' || status === 'completed' || status === 'succeeded') {

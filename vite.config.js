@@ -18,7 +18,8 @@ export default defineConfig({
       'pixel-magic-ai.web.app',
       'pixel-magic-ai.firebaseapp.com',
       'pixelmagic.vercel.app',
-      '4d40-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app'
+      '4d40-2405-201-5c28-600b-62a-d30-d701-4b24.ngrok-free.app',
+      'pixeldodo.vercel.app'
     ],
     headers: {
       'Access-Control-Allow-Origin': '*',

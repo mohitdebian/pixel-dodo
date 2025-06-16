@@ -13,7 +13,7 @@ export const BASE_URLS = {
       : 'https://test.checkout.dodopayments.com', // Development URL
     REDIRECT_URL: import.meta.env.PROD
       ? 'https://pixeldodo.vercel.app/dodo-redirect'  // Production URL
-      : (import.meta.env.VITE_PAYMENT_REDIRECT_URL || 'http://localhost:3000/dodo-redirect'), // Development URL
+      : (import.meta.env.VITE_PAYMENT_REDIRECT_URL || 'http://localhost:5173/dodo-redirect'), // Development URL
   },
   
   // Firebase URLs
@@ -25,12 +25,12 @@ export const BASE_URLS = {
   // Development URLs
   DEV: {
     NGROK_URL: import.meta.env.VITE_NGROK_URL || '',
-    LOCALHOST: 'http://localhost:3000',
+    LOCALHOST: 'http://localhost:5173',
   },
 
   // Production URLs
   PROD: {
-    APP_URL: 'https://pixel-magic-ai.web.app',
+    APP_URL: 'https://pixeldodo.vercel.app',
     FIREBASE_URL: 'https://pixel-magic-ai.firebaseapp.com',
   }
 } as const;
