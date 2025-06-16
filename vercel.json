@@ -3,17 +3,22 @@
   "builds": [
     {
       "src": "api/webhook.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/**"]
+      }
     }
   ],
   "routes": [
     {
       "src": "/api/webhook",
-      "dest": "/api/webhook.js"
+      "dest": "/api/webhook.js",
+      "methods": ["GET", "POST", "OPTIONS"]
     },
     {
       "src": "/dodo-redirect",
-      "dest": "/api/webhook.js"
+      "dest": "/api/webhook.js",
+      "methods": ["GET", "POST", "OPTIONS"]
     }
   ]
 } 

@@ -58,7 +58,7 @@ async function updateUserCredits(userId, amount) {
 }
 
 // Vercel serverless function handler
-export default async function handler(req, res) {
+const handler = async (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -195,4 +195,6 @@ export default async function handler(req, res) {
 
   // Handle unsupported methods
   return res.status(405).json({ error: 'Method not allowed' });
-}
+};
+
+export default handler;
