@@ -1,9 +1,9 @@
-require('dotenv').config();
-const admin = require('firebase-admin');
-const crypto = require('crypto');
+import 'dotenv/config';
+import admin from 'firebase-admin';
+import crypto from 'crypto';
 
 // Initialize Firebase Admin
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
@@ -58,7 +58,7 @@ async function updateUserCredits(userId, amount) {
 }
 
 // Vercel serverless function handler
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -195,4 +195,4 @@ module.exports = async (req, res) => {
 
   // Handle unsupported methods
   return res.status(405).json({ error: 'Method not allowed' });
-};
+}
